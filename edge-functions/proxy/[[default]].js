@@ -21,10 +21,14 @@ export async function onRequest({ request }) {
   proxyRequest.headers.set("Referer", "https://mobilelearn.chaoxing.com");
   proxyRequest.headers.set("Origin", "https://mobilelearn.chaoxing.com");
   proxyRequest.headers.set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36");
+  proxyRequest.headers.set("Accept-Encoding", "identity");
 
   const upstream = await fetch(proxyRequest);
   const headers = new Headers(upstream.headers);
-  
+  headers.delete("content-encoding");
+  headers.delete("content-length");
+  headers.delete("transfer-encoding");
+
   Object.entries(CORS_HEADERS).forEach(([key, value]) => headers.set(key, value));
 
   return new Response(upstream.body, {
